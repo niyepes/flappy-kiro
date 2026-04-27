@@ -10,6 +10,30 @@ export class Renderer {
     this.kiroImg.src = 'assets/ghosty.png';
   }
 
+  drawMenu(highScore) {
+    const { ctx } = this;
+    this._sky();
+    this._ground();
+    
+    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    ctx.fillRect(0, 0, CANVAS.W, CANVAS.H);
+    
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 56px sans-serif';
+    ctx.fillText('Flappy Kiro', CANVAS.W / 2, CANVAS.H / 2 - 60);
+    
+    ctx.font = '20px sans-serif';
+    ctx.fillStyle = '#ddd';
+    ctx.fillText('Presiona ESPACIO o CLIC para comenzar', CANVAS.W / 2, CANVAS.H / 2 + 20);
+    
+    if (highScore > 0) {
+      ctx.font = '18px sans-serif';
+      ctx.fillStyle = '#ffd700';
+      ctx.fillText(`High Score: ${highScore}`, CANVAS.W / 2, CANVAS.H / 2 + 60);
+    }
+  }
+
   drawFrame(player, pipes, score) {
     this._sky();
     pipes.forEach(p => this._pipe(p));
@@ -18,19 +42,31 @@ export class Renderer {
     this._score(score);
   }
 
-  drawGameOver(score) {
+  drawGameOver(score, highScore, isNewRecord) {
     const { ctx } = this;
     ctx.fillStyle = 'rgba(0,0,0,0.45)';
     ctx.fillRect(0, 0, CANVAS.W, CANVAS.H);
     ctx.textAlign = 'center';
     ctx.fillStyle = '#fff';
     ctx.font = 'bold 48px sans-serif';
-    ctx.fillText('Game Over', CANVAS.W / 2, CANVAS.H / 2 - 20);
+    ctx.fillText('Game Over', CANVAS.W / 2, CANVAS.H / 2 - 40);
+    
     ctx.font = '22px sans-serif';
-    ctx.fillText(`Score: ${score}`, CANVAS.W / 2, CANVAS.H / 2 + 20);
+    ctx.fillText(`Score: ${score}`, CANVAS.W / 2, CANVAS.H / 2 + 10);
+    
+    ctx.font = '18px sans-serif';
+    ctx.fillStyle = '#ffd700';
+    ctx.fillText(`High Score: ${highScore}`, CANVAS.W / 2, CANVAS.H / 2 + 40);
+    
+    if (isNewRecord) {
+      ctx.fillStyle = '#00ff00';
+      ctx.font = 'bold 20px sans-serif';
+      ctx.fillText('🎉 New Record! 🎉', CANVAS.W / 2, CANVAS.H / 2 + 70);
+    }
+    
     ctx.font = '18px sans-serif';
     ctx.fillStyle = '#ddd';
-    ctx.fillText('Espacio o clic para reiniciar', CANVAS.W / 2, CANVAS.H / 2 + 55);
+    ctx.fillText('Espacio o clic para reiniciar', CANVAS.W / 2, CANVAS.H / 2 + 105);
   }
 
   _sky() {
