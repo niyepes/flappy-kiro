@@ -1,11 +1,12 @@
 // SRP: orquesta el loop y coordina dependencias inyectadas
-// DIP: depende de abstracciones (Player, PipeManager, Renderer, InputHandler, ScoreManager, GameStateMachine)
+// DIP: depende de abstracciones (Player, PipeManager, Renderer, InputHandler, ScoreManager, GameStateMachine, AudioManager)
 import { Player }            from './src/physics.js';
 import { PipeManager }       from './src/pipes.js';
 import { Renderer }          from './src/renderer.js';
 import { InputHandler }      from './src/input.js';
 import { ScoreManager }      from './src/score.js';
 import { GameStateMachine }  from './src/state-machine.js';
+import { AudioManager }      from './src/audio.js';
 
 const canvas   = document.getElementById('gameCanvas');
 const score    = new ScoreManager();
@@ -14,10 +15,11 @@ const pipes    = new PipeManager(score);
 const renderer = new Renderer(canvas.getContext('2d'));
 const input    = new InputHandler(canvas);
 const state    = new GameStateMachine();
+const audio    = new AudioManager();
 
 input.addEventListener('action', () => {
   if (state.isMenu())     startGame();
-  if (state.isPlaying())  player.jump();
+  if (state.isPlaying())  { player.jump(); audio.play('jump'); }
   if (state.isGameOver()) reset();
 });
 
@@ -33,10 +35,19 @@ function reset() {
 }
 
 function update(dt) {
-  if (!state.isPlaying()) return;
-  player.update(dt);
-  if (player.isOutOfBounds() || pipes.update(dt, player.hitbox)) {
-    state.toGameOver();
+  if (state.isPlaying()) {
+    player.update(dt);
+    renderer.updateBackground(dt);
+    
+    const prevScore = score.current;
+    const collision = pipes.update(dt, player.hitbox);
+    
+    if (score.current > prevScore) audio.play('jump'); // reuse jump sound for score
+    
+    if (player.isOutOfBounds() || collision) {
+      state.toGameOver();
+      audio.play('gameOver');
+    }
   }
 }
 
