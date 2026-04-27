@@ -1,15 +1,18 @@
-// SRP: responsable de generación, movimiento, scoring y reciclado de tuberías
+// SRP: responsable de generación, movimiento y reciclado de tuberías
+// DIP: depende de ScoreManager inyectado
 import { CONFIG } from './config.js';
 import { overlap } from './collision.js';
 
 const { PIPE, CANVAS } = CONFIG;
 
 export class PipeManager {
-  constructor() { this.reset(); }
+  constructor(scoreManager) {
+    this.scoreManager = scoreManager;
+    this.reset();
+  }
 
   reset() {
     this.pipes = [];
-    this.score = 0;
   }
 
   update(dt, playerHitbox) {
@@ -20,7 +23,7 @@ export class PipeManager {
 
       if (!p.scored && p.x + PIPE.W < playerHitbox.x) {
         p.scored = true;
-        this.score++;
+        this.scoreManager.increment();
       }
 
       if (this._hitsPlayer(p, playerHitbox)) return true; // collision
