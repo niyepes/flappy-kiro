@@ -2,12 +2,26 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Flappy Kiro</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #1a1a2e; display: flex; justify-content: center; align-items: center; height: 100vh; }
-    canvas { display: block; }
+    body { 
+      background: #1a1a2e; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      min-height: 100vh;
+      overflow: hidden;
+    }
+    canvas { 
+      display: block;
+      max-width: 100vw;
+      max-height: 100vh;
+      width: auto;
+      height: auto;
+      image-rendering: crisp-edges;
+    }
   </style>
 </head>
 <body>
