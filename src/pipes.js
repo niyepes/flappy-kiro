@@ -36,8 +36,9 @@ export class PipeManager {
 
   _spawnIfNeeded() {
     const { width, height } = this.getCanvasSize();
-    const spawnX = 600; // Fixed spawn distance from left
     const last = this.pipes[this.pipes.length - 1];
+    const spawnX = Math.max(width, 800); // Spawn at screen edge or minimum 800px
+    
     if (!last || last.x <= spawnX - PIPE.INTERVAL) {
       const min = PIPE.MIN_MARGIN;
       const max = height - PIPE.GAP - min - 20; // 20 for ground

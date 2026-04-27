@@ -129,8 +129,9 @@ export class Renderer {
   }
 
   _pipe(p) {
+    const h = this.ctx.canvas.height;
     this._pipeSegment(p.x, 0, PIPE.W, p.topH);
-    this._pipeSegment(p.x, p.topH + PIPE.GAP, PIPE.W, CANVAS.H - p.topH - PIPE.GAP);
+    this._pipeSegment(p.x, p.topH + PIPE.GAP, PIPE.W, h - p.topH - PIPE.GAP - 20);
   }
 
   _pipeSegment(x, y, w, h) {
