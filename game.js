@@ -18,9 +18,11 @@ function resizeCanvas() {
 resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
 
+const getCanvasSize = () => ({ width: canvas.width, height: canvas.height });
+
 const score    = new ScoreManager();
-const player   = new Player();
-const pipes    = new PipeManager(score);
+const player   = new Player(getCanvasSize);
+const pipes    = new PipeManager(score, getCanvasSize);
 const renderer = new Renderer(canvas.getContext('2d'));
 const input    = new InputHandler(canvas);
 const state    = new GameStateMachine();

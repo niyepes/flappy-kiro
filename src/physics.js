@@ -1,14 +1,18 @@
 // SRP: responsable únicamente de la física y estado del jugador
 import { CONFIG } from './config.js';
 
-const { PLAYER, PHYSICS, CANVAS } = CONFIG;
+const { PLAYER, PHYSICS } = CONFIG;
 
 export class Player {
-  constructor() { this.reset(); }
+  constructor(getCanvasSize) {
+    this.getCanvasSize = getCanvasSize;
+    this.reset();
+  }
 
   reset() {
+    const { height } = this.getCanvasSize();
     this.x = PLAYER.X;
-    this.y = CANVAS.H / 2;
+    this.y = height / 2;
     this.vy = 0;
   }
 
@@ -28,6 +32,7 @@ export class Player {
   }
 
   isOutOfBounds() {
-    return this.y <= 0 || this.y + PLAYER.H >= CANVAS.H;
+    const { height } = this.getCanvasSize();
+    return this.y <= 0 || this.y + PLAYER.H >= height - 20; // 20 for ground
   }
 }

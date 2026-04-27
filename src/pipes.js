@@ -3,11 +3,12 @@
 import { CONFIG } from './config.js';
 import { overlap } from './collision.js';
 
-const { PIPE, CANVAS } = CONFIG;
+const { PIPE } = CONFIG;
 
 export class PipeManager {
-  constructor(scoreManager) {
+  constructor(scoreManager, getCanvasSize) {
     this.scoreManager = scoreManager;
+    this.getCanvasSize = getCanvasSize;
     this.reset();
   }
 
@@ -34,17 +35,19 @@ export class PipeManager {
   }
 
   _spawnIfNeeded() {
+    const { width, height } = this.getCanvasSize();
     const last = this.pipes[this.pipes.length - 1];
-    if (!last || last.x <= CANVAS.W - PIPE.INTERVAL) {
+    if (!last || last.x <= width - PIPE.INTERVAL) {
       const min = PIPE.MIN_MARGIN;
-      const max = CANVAS.H - PIPE.GAP - min;
-      this.pipes.push({ x: CANVAS.W, topH: Math.random() * (max - min) + min, scored: false });
+      const max = height - PIPE.GAP - min - 20; // 20 for ground
+      this.pipes.push({ x: width, topH: Math.random() * (max - min) + min, scored: false });
     }
   }
 
   _hitsPlayer(p, box) {
+    const { height } = this.getCanvasSize();
     const top = { x: p.x, y: 0, w: PIPE.W, h: p.topH };
-    const bot = { x: p.x, y: p.topH + PIPE.GAP, w: PIPE.W, h: CANVAS.H - p.topH - PIPE.GAP };
+    const bot = { x: p.x, y: p.topH + PIPE.GAP, w: PIPE.W, h: height - p.topH - PIPE.GAP };
     return overlap(box, top) || overlap(box, bot);
   }
 }
