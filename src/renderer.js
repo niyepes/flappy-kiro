@@ -8,6 +8,11 @@ export class Renderer {
     this.ctx = ctx;
     this.kiroImg = new Image();
     this.kiroImg.src = 'assets/ghosty.png';
+    this.bgOffset = 0;
+  }
+
+  updateBackground(dt) {
+    this.bgOffset = (this.bgOffset + 30 * dt) % CANVAS.W;
   }
 
   drawMenu(highScore) {
@@ -70,8 +75,23 @@ export class Renderer {
   }
 
   _sky() {
-    this.ctx.fillStyle = '#87ceeb';
-    this.ctx.fillRect(0, 0, CANVAS.W, CANVAS.H);
+    const { ctx } = this;
+    const gradient = ctx.createLinearGradient(0, 0, 0, CANVAS.H);
+    gradient.addColorStop(0, '#87ceeb');
+    gradient.addColorStop(1, '#b0e0e6');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, CANVAS.W, CANVAS.H);
+    
+    // Parallax clouds
+    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+    for (let i = 0; i < 3; i++) {
+      const x = ((i * 200 - this.bgOffset) % CANVAS.W) - 50;
+      ctx.beginPath();
+      ctx.arc(x, 80 + i * 40, 30, 0, Math.PI * 2);
+      ctx.arc(x + 25, 80 + i * 40, 35, 0, Math.PI * 2);
+      ctx.arc(x + 50, 80 + i * 40, 30, 0, Math.PI * 2);
+      ctx.fill();
+    }
   }
 
   _ground() {
@@ -97,12 +117,20 @@ export class Renderer {
   }
 
   _player(player) {
+    const { ctx } = this;
+    const rotation = Math.max(-0.5, Math.min(0.4, player.vy / 1000));
+    
+    ctx.save();
+    ctx.translate(player.x + PLAYER.W / 2, player.y + PLAYER.H / 2);
+    ctx.rotate(rotation);
+    
     if (this.kiroImg.complete && this.kiroImg.naturalWidth) {
-      this.ctx.drawImage(this.kiroImg, player.x, player.y, PLAYER.W, PLAYER.H);
+      ctx.drawImage(this.kiroImg, -PLAYER.W / 2, -PLAYER.H / 2, PLAYER.W, PLAYER.H);
     } else {
-      this.ctx.fillStyle = '#fff';
-      this.ctx.fillRect(player.x, player.y, PLAYER.W, PLAYER.H);
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(-PLAYER.W / 2, -PLAYER.H / 2, PLAYER.W, PLAYER.H);
     }
+    ctx.restore();
   }
 
   _score(score) {
