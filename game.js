@@ -9,6 +9,15 @@ import { GameStateMachine }  from './src/state-machine.js';
 import { AudioManager }      from './src/audio.js';
 
 const canvas   = document.getElementById('gameCanvas');
+
+// Resize canvas to fullscreen
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
 const score    = new ScoreManager();
 const player   = new Player();
 const pipes    = new PipeManager(score);
