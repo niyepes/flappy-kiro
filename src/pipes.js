@@ -36,11 +36,12 @@ export class PipeManager {
 
   _spawnIfNeeded() {
     const { width, height } = this.getCanvasSize();
+    const spawnX = 600; // Fixed spawn distance from left
     const last = this.pipes[this.pipes.length - 1];
-    if (!last || last.x <= width - PIPE.INTERVAL) {
+    if (!last || last.x <= spawnX - PIPE.INTERVAL) {
       const min = PIPE.MIN_MARGIN;
       const max = height - PIPE.GAP - min - 20; // 20 for ground
-      this.pipes.push({ x: width, topH: Math.random() * (max - min) + min, scored: false });
+      this.pipes.push({ x: spawnX, topH: Math.random() * (max - min) + min, scored: false });
     }
   }
 
